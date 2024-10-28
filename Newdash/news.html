@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WebSocket Real-time Chart</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<h2>Real-time Data from WebSocket</h2>
+<div id="chart"></div>
+
+<script>
+    // 创建 Plotly 图表
+    var layout = {
+        title: 'Real-time Data',
+        xaxis: {title: 'Time'},
+        yaxis: {title: 'Value'},
+        showlegend: true,
+    };
+    var data = [{
+        x: [],
+        y: [],
+        mode: 'lines',
+        name: 'Cur Pos'
+    }];
+
+    Plotly.newPlot('chart', data, layout);
+
+    // 连接 WebSocket
+    var socket = new WebSocket('ws://localhost:8765');
+
+    socket.onopen = function (event) {
+        console.log('WebSocket connection established.');
+    };
+
+    socket.onmessage = function (event) {
+        // 接收到服务器发送的数据
+        var receivedData = JSON.parse(event.data);
+        var timestamps = receivedData['timestamps'];
+        var curPosData = receivedData['metrics']['cur_pos'];
+
+        // 假设每个关节的数据都在 cur_pos 中，我们只取第一个关节的数据
+        var jointIndex = 0;
+        var new_x = timestamps;
+        var new_y = curPosData.map(pos => pos[jointIndex]);
+
+        // 更新图表数据
+        Plotly.extendTraces('chart', {x: [new_x], y: [new_y]}, [0]);
+
+        // 只保留 1000 个点
+        var maxDataPoints = 1000;
+        if (data[0].x.length > maxDataPoints) {
+            var update = {
+                x: [[null]],
+                y: [[null]]
+            };
+            Plotly.relayout('chart', update);
+        }
+    };
+
+    socket.onclose = function (event) {
+        console.log('WebSocket connection closed.');
+    };
+</script>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>
