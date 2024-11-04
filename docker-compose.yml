@@ -5,7 +5,10 @@ services:
     build:
       context: .
       dockerfile: DockerComs/Dockerfile
-    image: dashrob:v1
+      args:
+        - REPO=dashrob
+        - TAG=v1
+    image: ${REPO}:${TAG}
     command: python data_zset.py
     network_mode: host
 
@@ -13,6 +16,9 @@ services:
     build:
       context: .
       dockerfile: DockerComs/Dockerfile
-    image: dashrob:v1
+      args:
+        - REPO=dashrob
+        - TAG=v1
+    image: ${REPO}:${TAG}
     command: python data_zset_dash.py
     network_mode: host
