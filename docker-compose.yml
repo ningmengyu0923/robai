@@ -1,33 +1,18 @@
-version: "3.9"
-
+version: '3'
 services:
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
 
-  listener:
+  dash_zset:
     build:
-      context: ./listener
-      dockerfile: Dockerfile
-    depends_on:
-      - redis
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    volumes:
-      - ./listener:/app  # 映射代码到容器，以便开发时热更新
+      context: .
+      dockerfile: DockerComs/Dockerfile
+    image: dashrob:v1
+    command: python data_zset.py
+    network_mode: host
 
-  dashboard:
+  dash_zset_dash:
     build:
-      context: ./dashboard
-      dockerfile: Dockerfile
-    ports:
-      - "8050:8050"  # 将 Dash 服务暴露在本地端口 8050
-    depends_on:
-      - redis
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    volumes:
-      - ./dashboard:/app  # 映射代码到容器，以便开发时热更新
+      context: .
+      dockerfile: DockerComs/Dockerfile
+    image: dashrob:v1
+    command: python data_zset_dash.py
+    network_mode: host
