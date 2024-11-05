@@ -4,7 +4,7 @@ services:
   dash_zset:
     build:
       context: .
-      dockerfile: DockerComs/Dockerfile
+      dockerfile: Dockerfile
       args:
         - REPO=dashrob
         - TAG=v1
@@ -15,7 +15,7 @@ services:
   dash_zset_dash:
     build:
       context: .
-      dockerfile: DockerComs/Dockerfile
+      dockerfile: Dockerfile
       args:
         - REPO=dashrob
         - TAG=v1
